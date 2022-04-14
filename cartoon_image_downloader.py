@@ -2,9 +2,9 @@ import os
 import config
 import downloader
 
-PATH_TO_SAFEBOORU_ALL_DATA_CSV = './all_data.csv'
-PATH_TO_STORE_DOWNLOADED_CARTOON_IMAGES = './safebooru/'
-CARTOON_IMAGES_ZIPFILE_NAME = './safebooru'
+PATH_TO_SAFEBOORU_ALL_DATA_CSV = '../all_data.csv'
+PATH_TO_STORE_DOWNLOADED_CARTOON_IMAGES = '../safebooru/'
+CARTOON_IMAGES_ZIPFILE_NAME = '../safebooru'
 
 def main():
     if not os.path.exists(PATH_TO_STORE_DOWNLOADED_CARTOON_IMAGES):
