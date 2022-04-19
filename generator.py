@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch
 import torch.nn.functional as F
 from torch import sigmoid
 
@@ -69,7 +70,7 @@ from torchvision import models
 from torch.nn import BCELoss
 
 class GeneratorLoss(torch.nn.Module):
-  def __init__(self):
+  def __init__(self, vgg16):
       super(GeneratorLoss, self).__init__()
       self.w = 0.000005
       self.bce_loss = BCELoss()
@@ -77,12 +78,16 @@ class GeneratorLoss(torch.nn.Module):
       for param in self.feature_extractor.parameters():
         param.require_grad = False
 
+      self.device = torch.device('cpu')
+      if torch.cuda.is_available():
+        self.device = torch.device('cuda')
+
   def forward(self, discriminator_output_of_generated_image_input,
               generator_input,
               generator_output,
               epoch,
               is_init_phase=False,
-              write_to_tensorboard=False):
+              write_to_tensorboard=False, writer = None):
     if is_init_phase:
       g_content_loss = self._content_loss(generator_input, generator_output)
       g_adversarial_loss = 0.0
@@ -101,7 +106,7 @@ class GeneratorLoss(torch.nn.Module):
 
   def _adversarial_loss_generator_part_only(self, discriminator_output_of_generated_image_input):
     actual_batch_size = discriminator_output_of_generated_image_input.size()[0]
-    ones = torch.ones([actual_batch_size, 1, 64, 64]).to(device)
+    ones = torch.ones([actual_batch_size, 1, 64, 64]).to(self.device)
     return self.bce_loss(discriminator_output_of_generated_image_input, ones)
 
   def _content_loss(self, generator_input, generator_output):

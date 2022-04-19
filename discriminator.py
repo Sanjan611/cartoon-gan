@@ -1,5 +1,7 @@
 import torch.nn as nn
+import torch
 import torch.nn.functional as F
+from torch import sigmoid
 
 class Discriminator(nn.Module):
   def __init__(self):
@@ -38,30 +40,34 @@ class DiscriminatorLoss(torch.nn.Module):
   def __init__(self):
       super(DiscriminatorLoss, self).__init__()
       self.bce_loss = BCELoss()
+    
+      self.device = torch.device('cpu')
+      if torch.cuda.is_available():
+        self.device = torch.device('cuda')
 
   def forward(self, discriminator_output_of_cartoon_input,
               discriminator_output_of_cartoon_smoothed_input,
               discriminator_output_of_generated_image_input,
               epoch,
-              write_to_tensorboard=False):
+              write_to_tensorboard=False, writer = None):
 
     return self._adversarial_loss(discriminator_output_of_cartoon_input,
                      discriminator_output_of_cartoon_smoothed_input,
                      discriminator_output_of_generated_image_input,
                      epoch,
-                     write_to_tensorboard)
+                     write_to_tensorboard, writer = writer)
 
   def _adversarial_loss(self, discriminator_output_of_cartoon_input,
                      discriminator_output_of_cartoon_smoothed_input,
                      discriminator_output_of_generated_image_input,
                      epoch,
-                     write_to_tensorboard):
+                     write_to_tensorboard, writer = None):
 
     # define ones and zeros here instead within __init__ due to have same shape as input
     # due to testing different batch_sizes, sometimes the "last batch" has < batch_size elements
     actual_batch_size = discriminator_output_of_cartoon_input.size()[0]
-    zeros = torch.zeros([actual_batch_size, 1, 64, 64]).to(device)
-    ones = torch.ones([actual_batch_size, 1, 64, 64]).to(device)
+    zeros = torch.zeros([actual_batch_size, 1, 64, 64]).to(self.device)
+    ones = torch.ones([actual_batch_size, 1, 64, 64]).to(self.device)
 
     d_loss_cartoon = self.bce_loss(discriminator_output_of_cartoon_input, ones)
     d_loss_cartoon_smoothed = self.bce_loss(discriminator_output_of_cartoon_smoothed_input, zeros)
