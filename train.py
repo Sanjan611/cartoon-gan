@@ -4,6 +4,9 @@ from torchvision.datasets import ImageFolder
 from torchvision import transforms
 from torch.utils.data import random_split
 import math
+import numpy as np
+
+import matplotlib.pyplot as plt
 
 import os
 
