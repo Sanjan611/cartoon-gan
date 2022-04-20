@@ -1,4 +1,4 @@
-# AWS set up
+# AWS instance set up
 
 - EC2 instance
     - Deep Learning Base AMI (Ubuntu 18)
@@ -29,3 +29,53 @@
         - Relax permissions: `sudo chmod go+rw data/`
 
 All work like dataset, repo, etc. should be done inside this `data/` folder since that can be detached and attached to instances. Anything on instance storage will be deleted when instance gets terminated.
+
+# Files and folders
+Everything is now under the `data/` folder.
+
+Clone the repo. 
+
+```
+git clone https://github.com/Sanjan611/cartoon-gan.git
+mkdir data
+cd data
+```
+
+From our shared Drive folder, download the 3 *.zip* files (one for cartoon images, one for smoothed cartoon images, one for real photos). 
+
+SCP those files to the `data/data/` directory on the instance. 
+
+On the instance, first create folders like this under the `data/data/` folder.
+```
+cd ~/data/data/
+mkdir cartoons
+cd cartoons
+mkdir 1
+
+cd ..
+mkdir cartoons_smoothed
+cd cartoons_smoothed
+mkdir 1
+
+cd ..
+mkdir photos
+cd photos
+mkdir 1
+
+```
+
+unzip those files like
+```
+cd ~/data/data
+unzip safebooru.zip -d cartoons/1/
+unzip safebooru-smoothed.zip -d cartoons_smoothed/1/
+unzip coco.zip -d photos/1/
+```
+
+
+
+
+
+
+
+
