@@ -143,6 +143,8 @@ def train(_num_epochs, checkpoint_dir, best_valid_loss, epochs_already_done, los
 	print_every = 10
 	start_time = time.time()
 
+	scaler = torch.cuda.amp.GradScaler()
+
 	for epoch in range(_num_epochs - epochs_already_done):
 		epoch = epoch + epochs_already_done
 		print(f"EPOCH:{epoch+1}/{_num_epochs}")
@@ -155,47 +157,56 @@ def train(_num_epochs, checkpoint_dir, best_valid_loss, epochs_already_done, los
 
 			# train the discriminator
 			d_optimizer.zero_grad()
+
+			with torch.cuda.amp.autocast():
 			
-			d_of_cartoon_input = D(cartoon_images)
-			d_of_cartoon_smoothed_input = D(smoothed_cartoon_images)
-			d_of_generated_image_input = D(G(photo_images))
+				d_of_cartoon_input = D(cartoon_images)
+				d_of_cartoon_smoothed_input = D(smoothed_cartoon_images)
+				d_of_generated_image_input = D(G(photo_images))
 
-			write_only_one_loss_from_epoch_not_every_batch_loss = (index == 0)
+				write_only_one_loss_from_epoch_not_every_batch_loss = (index == 0)
 
-			d_loss = discriminatorLoss(d_of_cartoon_input,
-										d_of_cartoon_smoothed_input,
-										d_of_generated_image_input,
-										epoch,
-										write_to_tensorboard=write_only_one_loss_from_epoch_not_every_batch_loss,
-										writer = writer)
+				d_loss = discriminatorLoss(d_of_cartoon_input,
+											d_of_cartoon_smoothed_input,
+											d_of_generated_image_input,
+											epoch,
+											write_to_tensorboard=write_only_one_loss_from_epoch_not_every_batch_loss,
+											writer = writer)
 
-			d_loss.backward()
-			d_optimizer.step()
+			scaler.scale(d_loss).backward()
+			scaler.step(d_optimizer)
+			# d_loss.backward()
+			# d_optimizer.step()
 
 			# train the generator
 			g_optimizer.zero_grad()
 
-			g_output = G(photo_images)
+			with torch.cuda.amp.autocast():
+				g_output = G(photo_images)
 
-			d_of_generated_image_input = D(g_output)
+				d_of_generated_image_input = D(g_output)
 
-			if epoch < init_epochs:
-				# init
-				init_phase = True
-			else:
-				# train
-				init_phase = False
+				if epoch < init_epochs:
+					# init
+					init_phase = True
+				else:
+					# train
+					init_phase = False
 
-			g_loss = generatorLoss(d_of_generated_image_input,
-									photo_images,
-									g_output,
-									epoch,
-									is_init_phase=init_phase,
-									write_to_tensorboard=write_only_one_loss_from_epoch_not_every_batch_loss,
-									writer = writer)
+				g_loss = generatorLoss(d_of_generated_image_input,
+										photo_images,
+										g_output,
+										epoch,
+										is_init_phase=init_phase,
+										write_to_tensorboard=write_only_one_loss_from_epoch_not_every_batch_loss,
+										writer = writer)
 
-			g_loss.backward()
-			g_optimizer.step()
+			scaler.scale(g_loss).backward()
+			scaler.step(g_optimizer)
+			# g_loss.backward()
+			# g_optimizer.step()
+
+			scaler.update()
 
 			if (index % print_every) == 0:
 				losses.append((d_loss.item(), g_loss.item()))

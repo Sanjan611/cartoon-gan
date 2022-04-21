@@ -59,7 +59,7 @@ class Generator(nn.Module):
 
       x = self.conv_10(x)
 
-      x = sigmoid(x)
+      # x = sigmoid(x) # for mixed precision package
 
       return x
 
@@ -68,12 +68,13 @@ class Generator(nn.Module):
 
 from torchvision import models
 from torch.nn import BCELoss
+from torch.nn import BCEWithLogitsLoss # needed for mixed precision training
 
 class GeneratorLoss(torch.nn.Module):
   def __init__(self, vgg16):
       super(GeneratorLoss, self).__init__()
       self.w = 0.000005
-      self.bce_loss = BCELoss()
+      self.bce_loss = BCEWithLogitsLoss()
       self.feature_extractor = vgg16.features[:24]
       for param in self.feature_extractor.parameters():
         param.require_grad = False

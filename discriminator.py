@@ -27,7 +27,7 @@ class Discriminator(nn.Module):
     x = F.leaky_relu(self.norm_2(self.conv_5(F.leaky_relu(self.conv_4(x)))), negative_slope=0.2)
     x = F.leaky_relu(self.norm_3(self.conv_6(x)), negative_slope=0.2)
     x = self.conv_7(x)
-    x = sigmoid(x)
+    # x = sigmoid(x) # comment for mixed precision package
     
     return x
 
@@ -35,11 +35,12 @@ class Discriminator(nn.Module):
 
 from torchvision import models
 from torch.nn import BCELoss
+from torch.nn import BCEWithLogitsLoss # required for mixed precision package
 
 class DiscriminatorLoss(torch.nn.Module):
   def __init__(self):
       super(DiscriminatorLoss, self).__init__()
-      self.bce_loss = BCELoss()
+      self.bce_loss = BCEWithLogitsLoss()
     
       self.device = torch.device('cpu')
       if torch.cuda.is_available():
