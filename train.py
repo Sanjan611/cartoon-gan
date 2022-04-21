@@ -3,6 +3,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 from torchvision import transforms
 from torch.utils.data import random_split
+from torch import sigmoid
 import math
 import numpy as np
 
@@ -20,7 +21,7 @@ from os import listdir
 
 
 image_size = 256
-batch_size = 16
+batch_size = 32
 
 ################# DATALOADER #######################
 
@@ -220,7 +221,7 @@ def train(_num_epochs, checkpoint_dir, best_valid_loss, epochs_already_done, los
 			#write_model_weights_and_bias_to_tensorboard('G', G.state_dict(), epoch)
 		# save some intermediate results during training
 		print("Saving training results...")
-		save_training_result(photo_images, g_output)
+		save_training_result(photo_images, sigmoid(g_output))
 
 		# validate
 		with torch.no_grad():
