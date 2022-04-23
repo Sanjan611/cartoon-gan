@@ -3,6 +3,7 @@ import torch
 import torch.nn.functional as F
 from torch import sigmoid
 
+
 class ResidualBlock(nn.Module):
   def __init__(self):
     super(ResidualBlock, self).__init__()
@@ -71,10 +72,10 @@ from torch.nn import BCELoss
 from torch.nn import BCEWithLogitsLoss # needed for mixed precision training
 
 class GeneratorLoss(torch.nn.Module):
-  def __init__(self, vgg16):
+  def __init__(self, vgg16, content_loss_weight = 5e-6):
       super(GeneratorLoss, self).__init__()
       # self.w = 0.000005 # original
-      self.w = 5e-7
+      self.w = content_loss_weight
       self.bce_loss = BCEWithLogitsLoss()
       self.feature_extractor = vgg16.features[:24]
       for param in self.feature_extractor.parameters():

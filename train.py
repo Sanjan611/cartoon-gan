@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 
 import os
 
+from config_presentation import content_loss_weight, edge_loss_weight
+
 from torch.utils.tensorboard import SummaryWriter
 
 from generator import Generator, GeneratorLoss
@@ -99,8 +101,8 @@ for param in feature_extractor.parameters():
 print(feature_extractor)
 
 ################### LOSS FUNCTIONS ######################
-discriminatorLoss = DiscriminatorLoss()
-generatorLoss = GeneratorLoss(vgg16)
+discriminatorLoss = DiscriminatorLoss(edge_loss_weight = edge_loss_weight)
+generatorLoss = GeneratorLoss(vgg16, content_loss_weight = content_loss_weight)
 
 ############# OPTIMIZER ###################
 lr = 0.0002

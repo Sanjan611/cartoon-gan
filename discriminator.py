@@ -38,13 +38,15 @@ from torch.nn import BCELoss
 from torch.nn import BCEWithLogitsLoss # required for mixed precision package
 
 class DiscriminatorLoss(torch.nn.Module):
-  def __init__(self):
+  def __init__(self, edge_loss_weight = 1):
       super(DiscriminatorLoss, self).__init__()
       self.bce_loss = BCEWithLogitsLoss()
     
       self.device = torch.device('cpu')
       if torch.cuda.is_available():
         self.device = torch.device('cuda')
+
+      self.edge_loss_weight = edge_loss_weight
 
   def forward(self, discriminator_output_of_cartoon_input,
               discriminator_output_of_cartoon_smoothed_input,
@@ -75,7 +77,7 @@ class DiscriminatorLoss(torch.nn.Module):
     d_loss_generated_input = self.bce_loss(discriminator_output_of_generated_image_input, zeros)
 
     # d_loss = d_loss_cartoon + d_loss_cartoon_smoothed + d_loss_generated_input # original
-    d_loss = d_loss_cartoon + 2*d_loss_cartoon_smoothed + 2*d_loss_generated_input
+    d_loss = d_loss_cartoon + self.edge_loss_weight * d_loss_cartoon_smoothed + d_loss_generated_input
 
     if write_to_tensorboard:
       writer.add_scalar('d_loss_cartoon', d_loss_cartoon,epoch)

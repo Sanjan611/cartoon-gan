@@ -114,7 +114,7 @@ This hasn't been experimented with before. So no idea how different the results 
 
 # Steps to run
 
-Depending on the experiment, change the value of `w` or `u`.
+Depending on the experiment, change the value of `edge_loss_weight` and `content_loss_weight` in `config_presentation.py`.
 
 Remember to use `tmux`. Create the tmux session with `tmux new -s train`. Then run `python train.py`. And hide the tmux session using `Ctrl + B` + `D`. It's a bit strange, like first press `Ctrl + B`, lift all your fingers and then just press `D`. To connect back to the tmux later on, do `tmux a -t train` (attaching).
 
