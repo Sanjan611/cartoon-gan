@@ -26,7 +26,7 @@ batch_size = 32
 ################# DATALOADER #######################
 
 transformer = transforms.Compose([
-	transforms.CenterCrop(image_size),
+	# transforms.CenterCrop(image_size), # commented out
 	transforms.ToTensor() # ToTensor() changes the range of the values from [0, 255] to [0.0, 1.0]
 ])
 
