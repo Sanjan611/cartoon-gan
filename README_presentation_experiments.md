@@ -83,6 +83,7 @@ bash Miniconda3-py38_4.11.0-Linux-x86_64.sh
 ```
 Last command, just say `yes` to everything.
 
+Then `exit` the instance and SSH back in to start conda environment `base` on start up.
 ### Libraries
 ```
 cd ~/data/cartoon-gan
@@ -109,7 +110,14 @@ The paper says their loss terms are what sets them apart from other research in 
 One of the terms focuses on strengthening edges in the generated image. For this experiment we can vary the importance of that term and see what the generated output is like. This could be another scaling factor, something like `u * L_edge*.
 We'll try with u = 0 (no edge considerations), u = 1e-5, u = 1, u = 10. 
 
-This hasn't been experimented with before.
+This hasn't been experimented with before. So no idea how different the results are going to be.
+
+# Steps to run
+
+Depending on the experiment, change the value of `w` or `u`.
+
+Remember to use `tmux`. Create the tmux session with `tmux new -s train`. Then run `python train.py`. And hide the tmux session using `Ctrl + B` + `D`. It's a bit strange, like first press `Ctrl + B`, lift all your fingers and then just press `D`. To connect back to the tmux later on, do `tmux a -t train` (attaching).
+
 
 
 
