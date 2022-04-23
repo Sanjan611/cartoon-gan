@@ -27,7 +27,7 @@ batch_size = 32
 
 transformer = transforms.Compose([
 	# transforms.CenterCrop(image_size), # commented
-	transforms.Resize(image_size),
+	transforms.RandomResizedCrop(image_size),
 	transforms.ToTensor() # ToTensor() changes the range of the values from [0, 255] to [0.0, 1.0]
 ])
 
