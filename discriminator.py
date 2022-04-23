@@ -74,7 +74,8 @@ class DiscriminatorLoss(torch.nn.Module):
     d_loss_cartoon_smoothed = self.bce_loss(discriminator_output_of_cartoon_smoothed_input, zeros)
     d_loss_generated_input = self.bce_loss(discriminator_output_of_generated_image_input, zeros)
 
-    d_loss = d_loss_cartoon + d_loss_cartoon_smoothed + d_loss_generated_input
+    # d_loss = d_loss_cartoon + d_loss_cartoon_smoothed + d_loss_generated_input # original
+    d_loss = d_loss_cartoon + 2*d_loss_cartoon_smoothed + 2*d_loss_generated_input
 
     if write_to_tensorboard:
       writer.add_scalar('d_loss_cartoon', d_loss_cartoon,epoch)
