@@ -103,6 +103,15 @@ The paper uses a w = 10 but the repo uses w = 5e-6. This is mainly cause the car
 
 This has been experimented with before in the repo.
 
+In code, w is `content_loss_weight`.
+
+- Shivani - w = 0 
+- Suyash - w = 1e-10
+- Sayali - w= 1e-5
+- Sanjan - w = 1
+
+In the `config_presentation.py` file, keep the other value `edge_loss_weight` = 1.
+
 
 ## Experiment 2: Adversarial loss terms
 The paper says their loss terms are what sets them apart from other research in this area. So we'll just see how impactful the adversarial loss terms are to the output of the generator. 
@@ -111,6 +120,15 @@ One of the terms focuses on strengthening edges in the generated image. For this
 We'll try with u = 0 (no edge considerations), u = 1e-5, u = 1, u = 10. 
 
 This hasn't been experimented with before. So no idea how different the results are going to be.
+
+In code, u is `edge_loss_weight`.
+
+- Shivani - u = 0 
+- Suyash - u = 1e-10
+- Sayali - u= 1e-5
+- Sanjan - u = 1
+
+In the `config_presentation.py` file, keep the other value `content_loss_weight` = 5e-6.
 
 # Steps to run
 
