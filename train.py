@@ -83,6 +83,7 @@ G.to(device)
 D.to(device)
 
 ############# VGG16 #######
+os.system("mkdir ../data/models/")
 
 path_to_pretrained_vgg16 = '../data/models/vgg16-397923af.pth'
 
